@@ -1,0 +1,121 @@
+:root {
+  color-scheme: dark;
+  --gc-bg: #0a0e17;
+  --gc-primary: #00e5ff;
+  --gc-line: rgba(0, 229, 255, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--gc-bg);
+  background-image:
+    radial-gradient(900px 500px at 88% -10%, rgba(0, 229, 255, 0.1), transparent 70%),
+    radial-gradient(700px 420px at 0% 100%, rgba(47, 107, 255, 0.1), transparent 70%),
+    linear-gradient(rgba(0, 229, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.045) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 24px 24px, 24px 24px;
+  background-attachment: fixed;
+  font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  color: #e6f1ff;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 229, 255, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page {
+  padding: 18px 22px 28px;
+}
+
+/* 列表页：占满内容区，表格内部滚动、分页贴底 */
+.page-fill {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 420px;
+  padding-bottom: 12px;
+}
+
+.page-fill > .page-desc,
+.page-fill > .row {
+  flex: none;
+}
+
+.table-fill {
+  flex: 1;
+  min-height: 0;
+}
+
+.table-fill > .n-card-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.page-title {
+  margin: 0 0 2px;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.page-desc {
+  margin: 0 0 16px;
+  color: #8b9bb4;
+  font-size: 13px;
+}
+
+/* 标题行：间距由行本身承担，否则描述的下边距只撑高行，右侧按钮贴住下方内容 */
+.row:has(> .page-desc) {
+  margin-bottom: 14px;
+}
+
+.row:has(> .page-desc) > .page-desc {
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.grid-cards {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+}
+
+.mono {
+  font-family: 'JetBrains Mono', Menlo, Consolas, monospace;
+  font-size: 12.5px;
+}
+
+.link {
+  color: var(--gc-primary);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.glow {
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+}
+
+.n-card {
+  backdrop-filter: blur(8px);
+}

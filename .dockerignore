@@ -1,0 +1,15 @@
+.git
+.gitignore
+data
+bin
+.env
+.env.*
+!.env.example
+web/node_modules
+web/dist
+web/.env.local
+*.db
+/tmp
+docs
+deploy/docker-compose.yml
+README.md

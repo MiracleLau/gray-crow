@@ -1,0 +1,88 @@
+# 三库同构验证：每次只起一个 profile
+#   docker compose --profile sqlite   up -d
+#   docker compose --profile mysql    up -d
+#   docker compose --profile postgres up -d
+# MASTER_KEY 可用环境变量注入，或写进同目录的 .env
+x-app: &app
+  build:
+    context: ..
+    dockerfile: deploy/Dockerfile
+  image: graycrow:local
+  restart: unless-stopped
+  ports:
+    - "${PORT:-8080}:8080"
+  environment:
+    MASTER_KEY: ${MASTER_KEY:?请先设置 MASTER_KEY（>=32 字符）}
+    SCAN_ENABLED: ${SCAN_ENABLED:-true}
+    GITHUB_API_BASE: ${GITHUB_API_BASE:-}
+    LOG_LEVEL: ${LOG_LEVEL:-info}
+
+services:
+  graycrow-sqlite:
+    <<: *app
+    profiles: ["sqlite"]
+    environment:
+      MASTER_KEY: ${MASTER_KEY:?请先设置 MASTER_KEY（>=32 字符）}
+      DB_DRIVER: sqlite
+      DB_DSN: /data/graycrow.db
+    volumes:
+      - sqlite-data:/data
+
+  graycrow-mysql:
+    <<: *app
+    profiles: ["mysql"]
+    environment:
+      MASTER_KEY: ${MASTER_KEY:?请先设置 MASTER_KEY（>=32 字符）}
+      DB_DRIVER: mysql
+      DB_DSN: graycrow:graycrow@tcp(mysql:3306)/graycrow?charset=utf8mb4&parseTime=True&loc=UTC
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    profiles: ["mysql"]
+    image: mysql:8.4
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpw}
+      MYSQL_DATABASE: graycrow
+      MYSQL_USER: graycrow
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-graycrow}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-rootpw}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  graycrow-postgres:
+    <<: *app
+    profiles: ["postgres"]
+    environment:
+      MASTER_KEY: ${MASTER_KEY:?请先设置 MASTER_KEY（>=32 字符）}
+      DB_DRIVER: postgres
+      DB_DSN: host=postgres user=graycrow password=${POSTGRES_PASSWORD:-graycrow} dbname=graycrow port=5432 sslmode=disable TimeZone=UTC
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    profiles: ["postgres"]
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: graycrow
+      POSTGRES_USER: graycrow
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-graycrow}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U graycrow -d graycrow"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  sqlite-data:
+  mysql-data:
+  postgres-data:

@@ -1,0 +1,36 @@
+# 灰鸦配置文件示例：cp config.example.yaml config.yaml 后按需修改。
+# 配置项名与环境变量同名（大小写不敏感），优先级：环境变量 > .env > 本文件 > 内置默认值。
+# 换路径：CONFIG_FILE=/etc/graycrow/config.yaml（显式指定却不存在会直接启动失败，防止静默用错配置）。
+
+port: 8080
+log_level: info
+
+# 数据库：sqlite | mysql | postgres
+db_driver: sqlite
+db_dsn: data/graycrow.db
+# mysql:    graycrow:graycrow@tcp(127.0.0.1:3306)/graycrow?charset=utf8mb4&parseTime=True&loc=UTC
+# postgres: host=127.0.0.1 user=graycrow password=graycrow dbname=graycrow port=5432 sslmode=disable TimeZone=UTC
+
+# 必填，>=32 字符：加密 API Key / 渠道密钥 / TOTP 密钥，丢了数据就解不开
+master_key: ""
+# 轮换期内的旧密钥，删除该行即结束轮换
+# master_key_old:
+#   - ""
+#   - ""
+
+session_ttl_hours: 168
+cookie_secure: false
+
+scan_enabled: true
+scan_min_interval_sec: 60
+# cron 表达式的解释时区（IANA 名称）
+scan_timezone: Asia/Shanghai
+
+api_rate_per_min: 8
+github_api_base: ""
+
+admin_user: admin
+admin_password: admin123
+
+# 前端静态资源目录（留空用二进制内嵌的）
+static_dir: ""

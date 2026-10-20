@@ -1,0 +1,37 @@
+# ---- 构建产物 ----
+bin/
+web/dist/
+
+# ---- 运行时数据（sqlite 与本地数据目录）----
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# ---- 密钥与本地配置（示例文件保留）----
+.env
+.env.*
+!.env.example
+config.yaml
+
+# ---- 测试 / 性能产物 ----
+*.test
+*.out
+coverage.*
+*.prof
+
+# ---- 前端依赖 ----
+node_modules/
+
+# ---- 编辑器 / 系统 / 本地工具 ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.log
+.openchamber/
+
+# ---- 本地文档 ----
+docs/
